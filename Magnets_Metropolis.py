@@ -25,4 +25,12 @@ E_equil_verf.append(Fc.State_Energy(Chain_Spin_StateVect))  # Save energy of the
 
 time = np.arange(0, Fc.Values["total_Time"], 1)
 
-Final_evol = Fc.Metropoolis(time,Chain_Spin_StateVect, Evol_Matr, E_equil_verf)
+Final_evol = Fc.Metropoolis(time, Chain_Spin_StateVect, Evol_Matr, E_equil_verf)
+
+
+##Save data to graph
+
+Data_checkEnergy_Equi = np.column_stack((time, Final_evol[1]))
+
+np.savetxt('StateEvol.txt', Final_evol[0])              #Save the evolution of the initial state data in a txt to graph
+np.savetxt('AvrEnergy.txt', Data_checkEnergy_Equi)      #Save the Average Energy values in each state to check equilibrium to graph

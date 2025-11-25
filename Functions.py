@@ -1,5 +1,5 @@
 ### Libraries in used HERE
-#te amo les
+
 import numpy as np
 
 
@@ -7,7 +7,7 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 100,
+"Num_particles" : 200,
 
 "total_Time" : 10000,
 
@@ -19,7 +19,7 @@ Values = {
 
 "K" : 1.0,
 
-"T" : 0.02,
+"T" : 0.1,
 }
 
 
@@ -29,7 +29,7 @@ Values = {
 
 def State_Energy(State):
 
-    sum_ss = sum(State[:-1]*State[1:])
+    sum_ss = sum(State[:-1]*State[1:]) + State[-1]*State[0]         #Cyclic Boundary conditions
     sum_s = sum(State)
 
     E = - (Values["J"]*sum_ss) - (Values["B"]*Values["Miu"]*sum_s)
@@ -81,7 +81,7 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
         else:
             delt_E = E_now - E_prev                                 ## Calculate de Energy difference
 
-            Relat_prob = np.exp(-delt_E/(Values["K"]*Values["T"]))  # Calculate the relative probability
+            Relat_prob = np.exp((-delt_E)/(Values["K"]*Values["T"]))  # Calculate the relative probability
 
             Choose_num = np.random.rand()                           ## we uniformly generate a 1 >= number >= 0 to make the desicion
 
@@ -96,4 +96,4 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
                 Equil_check(E_eq_verif, E_prev, i)
 
     
-    return Evol_M
+    return Evol_M, E_eq_verif
