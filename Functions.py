@@ -7,11 +7,11 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 200,
+"Num_particles" : 30,
 
-"total_Time" : 10000,
+"total_Time" : 500,
 
-"J" : 1.0,     # Exchange Energy
+"J" : 0.20,     # Exchange Energy
 
 "B" : 1.0,      # Value of the external magnetic field
 
@@ -19,7 +19,7 @@ Values = {
 
 "K" : 1.0,
 
-"T" : 0.1,
+"T" : 100,
 }
 
 
@@ -35,6 +35,26 @@ def State_Energy(State):
     E = - (Values["J"]*sum_ss) - (Values["B"]*Values["Miu"]*sum_s)
     return E
    
+
+#Energy local calculation (Metropolis):
+
+def Local_Energy(State, spin_posit):
+
+    if spin_posit == 0:
+        sum_ss = State[0]*State[1] + State[0]*State[-1]
+        sum_s = State[0] + State[1] + State[-1]
+
+    elif spin_posit == Values["Num_particles"] - 1:
+        sum_ss = State[-1]*State[-2] + State[-1]*State[0]
+        sum_s = State[-1] + State[-2] + State[0]
+
+    else:
+        sum_ss = sum(State[spin_posit - 1 : spin_posit + 1]*State[spin_posit : spin_posit + 2])
+        sum_s = sum(State[spin_posit - 1 : spin_posit + 2])
+
+    E = - (Values["J"]*sum_ss) - (Values["B"]*Values["Miu"]*sum_s)
+    return E
+
 
 #Equilibration check using Running avarage
 
@@ -63,11 +83,11 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
 
         #print(Posit_Rand_Particl)
 
-        E_prev = State_Energy(Chain_vector)                                     #Calculate and save the energy of the previous state
+        E_prev = Local_Energy(Chain_vector, Posit_Rand_Particl)                                     #Calculate and save the energy of the previous state (locally)
 
         Chain_vector[Posit_Rand_Particl] = -Chain_vector[Posit_Rand_Particl]
 
-        E_now = State_Energy(Chain_vector)                                      #Calculate and save the energy of the proposed state
+        E_now = Local_Energy(Chain_vector, Posit_Rand_Particl)                                      #Calculate and save the energy of the proposed state (locally)
         #print(E_now)
 
         ## If the energy of the new state is equal or lower than the energy of the previous state, we keep the new one.
@@ -90,10 +110,10 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
 
                 Equil_check(E_eq_verif, E_now, i)
             
-            else:
-                Evol_M[:,i] = np.transpose(prev_state)
+#            else:
+#                Evol_M[:,i] = np.transpose(prev_state)
+#
+#                Equil_check(E_eq_verif, E_prev, i)
 
-                Equil_check(E_eq_verif, E_prev, i)
 
-    
     return Evol_M, E_eq_verif
