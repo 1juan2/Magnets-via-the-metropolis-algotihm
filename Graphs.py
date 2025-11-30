@@ -14,12 +14,12 @@ E_equil = Data_E_equil[:, 1]
 
 ##Visualization of the material changing in time
 
-fig1 = plt.figure(figsize = (8,5))
+fig1 = plt.figure(figsize = (15,5))
 sns.heatmap(EV_matr, annot=False, cbar = False)
 plt.xlabel('Time')
 plt.ylabel('Num Particles')
-fig1.savefig('State_evolution.pdf')
-
+#fig1.savefig('State_evolution.pdf')
+plt.show()
 
 ##Graph equilibration check
 
@@ -28,4 +28,5 @@ plt.plot(time, E_equil)
 plt.xlabel('Time')
 plt.ylabel('Avr. Energy')
 plt.grid()
-fig2.savefig('Avr_Energy_equilCheck.pdf')
+#fig2.savefig('Avr_Energy_equilCheck.pdf')
+plt.show()
