@@ -9,17 +9,21 @@ import numpy as np
 Values = {
 "Num_particles" : 100,
 
-"total_Time" : 60000,
+"total_Time" : 60000,   #Total MC samples
 
-"J" : 1,     # Exchange Energy
+"J" : 1,                # Exchange Energy
 
-"B" : 0.3,      # Value of the external magnetic field
+"B" : 1,                # Value of the external magnetic field
 
-"Miu" : 0.33,   # giromag times Bohr magneton
+"Miu" : 0.33,           # giromag times Bohr magneton
 
-"K" : 1,
+"K" : 1,                # Botlzmann constant
 
-"T" : 1,
+"T" : 5,                # Temperature
+
+#################
+
+"Start_quantit_calcu" : 10000     #Since which MC iteration we are going ro calculate termal quantities.
 }
 
 
@@ -73,13 +77,13 @@ def Equil_check(vec_save, E_act, t):
 
 #Metropolis algorithm
 
-def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
+def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcul):
 
     for i in Time[1:]:
 
         prev_state = np.copy(Chain_vector)                                      ##Save the previous state in case we reject the new one.
 
-        Posit_Rand_Particl = np.random.randint(0, Values["Num_particles"])                # first we choose randomly a particle
+        Posit_Rand_Particl = np.random.randint(0, Values["Num_particles"])      # first we choose randomly a particle
 
         #print(Posit_Rand_Particl)
 
@@ -102,7 +106,7 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
 
             Relat_prob = np.exp((-delt_E)/(Values["K"]*Values["T"]))  # Calculate the relative probability
 
-            Choose_num = np.random.rand()                           ## we uniformly generate a 1 >= number >= 0 to make the desicion
+            Choose_num = np.random.rand()                             ## we uniformly generate a 1 >= number >= 0 to make the desicion
 
             if Relat_prob >= Choose_num:
                 Evol_M[:,i] = np.transpose(Chain_vector)
@@ -113,5 +117,37 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif):
                 Evol_M[:,i] = np.transpose(Chain_vector)
                 Equil_check(E_eq_verif, E_prev, i)
 
+        ## In equili, termodin quantities are calculated:
 
-    return Evol_M, E_eq_verif
+        if i >= Num_itera_star_temoCalcul:
+            if i == Num_itera_star_temoCalcul:
+                Magnetizat = 0
+                Inter_Energy = 0
+                Segund_mome_Energ = 0
+
+            Magnetizat = Magnetization(Magnetizat, Chain_vector, i, Num_itera_star_temoCalcul)
+            Inter_Energy = Moment_energy(Inter_Energy, Chain_vector, i, Num_itera_star_temoCalcul, 1)
+            Segund_mome_Energ = Moment_energy(Segund_mome_Energ, Chain_vector, i, Num_itera_star_temoCalcul, 2)
+
+    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (Values["T"]**2))
+
+    return Evol_M, E_eq_verif, Magnetizat, Inter_Energy, Specif_heat
+
+
+##When the system reaches equilibrium Magnetization, Specific heat and Internal Energy are calculated.
+
+def Magnetization(Final_magnetiz, State, t, start):
+    Magnet = sum(State)
+
+    Final_magnetiz = (Final_magnetiz*(t - start) + Magnet) / (t - start + 1)
+
+    return Final_magnetiz
+
+
+def Moment_energy(Final_moment, State, t, start, expo):  #Expo is to be able to calculate the first and second Energy moments.
+    Energ = (State_Energy(State))**(expo)                   #The first moment is the Internal energy and the second moment is necesary to calculate the Specific heat.
+
+    Final_moment = (Final_moment*(t - start) + Energ) / (t - start + 1)
+
+    return Final_moment
+    
