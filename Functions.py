@@ -7,23 +7,23 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 100,
+"Num_particles" : 1000,  # (100)
 
-"total_Time" : 60000,   #Total MC samples
+"total_Time" : 60,   #Total MC samples (60000)
 
-"J" : 1,                # Exchange Energy
+"J" : 1,                # Exchange Energy (1)
 
-"B" : 1,                # Value of the external magnetic field
+"B" : 1,                # Value of the external magnetic field (1)
 
-"Miu" : 0.33,           # giromag times Bohr magneton
+"Miu" : 0.33,           # giromag times Bohr magneton (0.33)
 
-"K" : 1,                # Botlzmann constant
+"K" : 1,                # Botlzmann constant (1)
 
-"T" : 5,                # Temperature
+"T" : [0.1, 0.5, 1, 1.5, 2, 2.5, 3, 3.5],                # Temperature (1)
 
 #################
 
-"Start_quantit_calcu" : 10000     #Since which MC iteration we are going ro calculate termal quantities.
+"Start_quantit_calcu" : 10     #Since which MC iteration we are going ro calculate termal quantities. (10000)
 }
 
 
@@ -77,45 +77,44 @@ def Equil_check(vec_save, E_act, t):
 
 #Metropolis algorithm
 
-def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcul):
+def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcul, temp):
 
     for i in Time[1:]:
 
-        prev_state = np.copy(Chain_vector)                                      ##Save the previous state in case we reject the new one.
+        for _ in range(Values["Num_particles"]):                                    #Change multiple spins "at the same time".
 
-        Posit_Rand_Particl = np.random.randint(0, Values["Num_particles"])      # first we choose randomly a particle
+            prev_state = np.copy(Chain_vector)                                      ##Save the previous state in case we reject the new one.
 
-        #print(Posit_Rand_Particl)
+            E_prev = State_Energy(Chain_vector)                                     #Calculate and save the energy of the previous state
 
-        E_prev = State_Energy(Chain_vector)                                     #Calculate and save the energy of the previous state (locally)
+            Posit_Rand_Particl = np.random.randint(0, Values["Num_particles"])      # first we choose randomly a particle
+            #print(Posit_Rand_Particl)
 
-        Chain_vector[Posit_Rand_Particl] = -Chain_vector[Posit_Rand_Particl]
+            Chain_vector[Posit_Rand_Particl] = -Chain_vector[Posit_Rand_Particl]
 
-        E_now = State_Energy(Chain_vector)                                      #Calculate and save the energy of the proposed state (locally)
-        #print(E_now)
+            E_now = State_Energy(Chain_vector)                                      #Calculate and save the energy of the proposed state
+            #print(E_now)
 
-        ## If the energy of the new state is equal or lower than the energy of the previous state, we keep the new one.
-        ## If the energy of the new state is higher than the energy of the previous state we use the relative probability and a random number to choose
-        delt_E = E_now - E_prev                                                 ## Calculate de Energy difference
+            ## If the energy of the new state is equal or lower than the energy of the previous state, we keep the new one.
+            ## If the energy of the new state is higher than the energy of the previous state we use the relative probability and a random number to choose
+            delt_E = E_now - E_prev                                                 ## Calculate de Energy difference
 
-        if delt_E <= 0:
-            Evol_M[:,i] = np.transpose(Chain_vector)
-
-            Equil_check(E_eq_verif, E_now, i)
-        else:
-
-            Relat_prob = np.exp((-delt_E)/(Values["K"]*Values["T"]))  # Calculate the relative probability
-
-            Choose_num = np.random.rand()                             ## we uniformly generate a 1 >= number >= 0 to make the desicion
-
-            if Relat_prob >= Choose_num:
-                Evol_M[:,i] = np.transpose(Chain_vector)
-
-                Equil_check(E_eq_verif, E_now, i)
+            if delt_E <= 0:
+                pass
             else:
-                Chain_vector = prev_state
-                Evol_M[:,i] = np.transpose(Chain_vector)
-                Equil_check(E_eq_verif, E_prev, i)
+
+                Relat_prob = np.exp((-delt_E)/(Values["K"]*temp))  # Calculate the relative probability
+
+                Choose_num = np.random.rand()                             ## we uniformly generate a 1 >= number >= 0 to make the desicion
+
+                if Relat_prob >= Choose_num:
+                    pass
+                else:
+                    Chain_vector = prev_state
+
+        E = State_Energy(Chain_vector)
+        Equil_check(E_eq_verif, E, i)
+        Evol_M[:,i] = np.transpose(Chain_vector)
 
         ## In equili, termodin quantities are calculated:
 
@@ -129,7 +128,7 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcu
             Inter_Energy = Moment_energy(Inter_Energy, Chain_vector, i, Num_itera_star_temoCalcul, 1)
             Segund_mome_Energ = Moment_energy(Segund_mome_Energ, Chain_vector, i, Num_itera_star_temoCalcul, 2)
 
-    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (Values["T"]**2))
+    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (temp**2))
 
     return Evol_M, E_eq_verif, Magnetizat, Inter_Energy, Specif_heat
 
