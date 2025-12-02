@@ -7,9 +7,9 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 100,  # (100)
+"Num_particles" : 1000,  # (100)
 
-"total_Time" : 600,   #Total MC samples (60000)
+"total_Time" : 60,   #Total MC samples (60000)
 
 "J" : 1,                # Exchange Energy (1)
 
@@ -19,11 +19,11 @@ Values = {
 
 "K" : 1,                # Botlzmann constant (1)
 
-"T" : 2,                # Temperature (1)
+"T" : [0.1, 0.5, 1, 1.5, 2, 2.5, 3, 3.5],                # Temperature (1)
 
 #################
 
-"Start_quantit_calcu" : 100     #Since which MC iteration we are going ro calculate termal quantities. (10000)
+"Start_quantit_calcu" : 10     #Since which MC iteration we are going ro calculate termal quantities. (10000)
 }
 
 
@@ -77,7 +77,7 @@ def Equil_check(vec_save, E_act, t):
 
 #Metropolis algorithm
 
-def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcul):
+def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcul, temp):
 
     for i in Time[1:]:
 
@@ -103,7 +103,7 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcu
                 pass
             else:
 
-                Relat_prob = np.exp((-delt_E)/(Values["K"]*Values["T"]))  # Calculate the relative probability
+                Relat_prob = np.exp((-delt_E)/(Values["K"]*temp))  # Calculate the relative probability
 
                 Choose_num = np.random.rand()                             ## we uniformly generate a 1 >= number >= 0 to make the desicion
 
@@ -128,7 +128,7 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcu
             Inter_Energy = Moment_energy(Inter_Energy, Chain_vector, i, Num_itera_star_temoCalcul, 1)
             Segund_mome_Energ = Moment_energy(Segund_mome_Energ, Chain_vector, i, Num_itera_star_temoCalcul, 2)
 
-    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (Values["T"]**2))
+    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (temp**2))
 
     return Evol_M, E_eq_verif, Magnetizat, Inter_Energy, Specif_heat
 
