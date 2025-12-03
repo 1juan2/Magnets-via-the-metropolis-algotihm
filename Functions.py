@@ -7,9 +7,9 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 1000,  # (100)
+"Num_particles" : 200,  # (100)
 
-"total_Time" : 60,   #Total MC samples (60000)
+"total_Time" : 600,   #Total MC samples (60000)
 
 "J" : 1,                # Exchange Energy (1)
 
@@ -19,11 +19,11 @@ Values = {
 
 "K" : 1,                # Botlzmann constant (1)
 
-"T" : [0.1, 0.5, 1, 1.5, 2, 2.5, 3, 3.5],                # Temperature (1)
+"T" : [0.1, 0.3, 0.5, 1, 1.3, 1.5, 2, 2.3, 2.5, 3, 3.3, 3.5, 4],                # Temperature (1)
 
 #################
 
-"Start_quantit_calcu" : 10     #Since which MC iteration we are going ro calculate termal quantities. (10000)
+"Start_quantit_calcu" : 100     #Since which MC iteration we are going ro calculate termal quantities. (10000)
 }
 
 
