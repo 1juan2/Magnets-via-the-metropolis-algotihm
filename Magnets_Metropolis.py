@@ -46,5 +46,5 @@ for case in range(len(Fc.Values["T"])):
 
     Data_checkEnergy_Equi = np.column_stack((time, Final_evol[1]))
 
-    np.savetxt('StateEvol.txt', Final_evol[0])              #Save the evolution of the initial state data in a txt to graph
-    np.savetxt('AvrEnergy.txt', Data_checkEnergy_Equi)      #Save the Average Energy values in each state to check equilibrium to graph
+    np.savetxt('StateEvol' + str(Fc.Values["T"][case]) + '.txt', Final_evol[0])              #Save the evolution of the initial state data in a txt to graph
+    np.savetxt('AvrEnergy' + str(Fc.Values["T"][case]) + '.txt', Data_checkEnergy_Equi)      #Save the Average Energy values in each state to check equilibrium to graph
