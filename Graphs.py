@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import Functions as Fc
+import Analytic as An
+import deriv as Dr
 
 
 ##Read data
@@ -20,37 +22,12 @@ Speci_heat = Data_termo_quant[:, 2]
 Temp = np.array(Fc.Values["T"])
 
 
-##Analytic solution
-
 n=Fc.Values["Num_particles"]
 j=Fc.Values["J"]
 k=Fc.Values["K"]
 t=np.arange(0.1, Fc.Values["T"][-1], 0.1)
 miu=Fc.Values["Miu"]
 b=Fc.Values["B"]
-
-def u_ana(n,j,k,t,b):
-
-    a = (miu*b)/(k*t)
-    c = (j)/(k*t)
-    delt = np.sqrt(np.sinh(a)**2 + np.exp(-4*c))
-
-    u = -n*j - (n/(np.cosh(a) + delt))*((miu*b*np.sinh(a)) + ((miu*b*np.sinh(a)*np.cosh(a) - 2*j*np.exp(-4*c))/delt))
-    return u
-
-    #return -n*j*np.tanh(j/(k*t))
-
-#print(u_ana(n,j,k,t))
-
-def cal_ana(n,j,k,t):
-    return (j/(k*t))**2/(np.cosh(j/(k*t))**2)
-
-#print(cal_ana(n,j,k,t))
-
-def mag_ana(n,j,k,t,b):
-    return n*np.exp(j/(k*t))*np.sinh((b*miu)/(k*t))/np.sqrt(np.exp(2*j/(k*t))*(np.sinh((b*miu)/(k*t)))**2 + np.exp(-2*j/(k*t)))
-
-#print(mag_ana(n,j,k,t,b))
 
 ##########################################################################
 
@@ -85,7 +62,7 @@ plt.show()
 
 fig3 = plt.figure(figsize = (5,5))
 plt.title('Cálculo analítico de la magentización vs resultado numerico')
-plt.plot(t,mag_ana(n,j,k,t,b))
+plt.plot(t,An.mag_ana(n,j,k,t,b,miu))
 plt.plot(Temp, Magnetiz)
 plt.xlabel('Temp')
 plt.ylabel('Magnetization')
@@ -98,7 +75,7 @@ plt.show()
 
 fig4 = plt.figure(figsize = (5,5))
 plt.title('Cálculo analítico de la energía vs resultado numerico')
-plt.plot(t,u_ana(n,j,k,t,b))
+plt.plot(t, An.u_ana(n,j,k,t,b,miu))
 plt.plot(Temp, Internal_energy)
 plt.xlabel('Temp')
 plt.ylabel('Internal_Energy')
@@ -111,7 +88,7 @@ plt.show()
 
 fig5 = plt.figure(figsize = (5,5))
 plt.title('Cálculo analítico del calor específico vs resultado numerico')
-plt.plot(t,cal_ana(n,j,k,t))
+plt.plot(Dr.X[1:-1], Dr.Specif_heat)
 plt.plot(Temp, Speci_heat)
 plt.xlabel('Temp')
 plt.ylabel('Specific heat')
