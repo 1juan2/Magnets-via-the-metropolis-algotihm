@@ -59,7 +59,7 @@ def Equil_check(vec_save, E_act, t):
 
 #Metropolis algorithm
 
-def Metropoolis(Time, Chain_vector, E_eq_verif, Num_itera_star_temoCalcul, temp):
+def Metropoolis(Time, Chain_vector, E_eq_verif, M_eq_verif, Num_itera_star_temoCalcul, temp):
 
     for i in Time[1:]:
 
@@ -95,7 +95,9 @@ def Metropoolis(Time, Chain_vector, E_eq_verif, Num_itera_star_temoCalcul, temp)
                     Chain_vector = prev_state
 
         E = State_Energy(Chain_vector)
+        M = np.abs(np.sum(Chain_vector))
         Equil_check(E_eq_verif, E, i)
+        Equil_check(M_eq_verif, M, i)
 
         # In equili, termodin quantities are calculated:
 
@@ -111,13 +113,13 @@ def Metropoolis(Time, Chain_vector, E_eq_verif, Num_itera_star_temoCalcul, temp)
 
     Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (temp**2))
 
-    return Chain_vector, E_eq_verif, Magnetizat, Inter_Energy, Specif_heat
+    return Chain_vector, E_eq_verif, M_eq_verif, Magnetizat, Inter_Energy, Specif_heat
 
 
 ##When the system reaches equilibrium Magnetization, Specific heat and Internal Energy are calculated.
 
 def Magnetization(Final_magnetiz, State, t, start):
-    Magnet = np.sum(State)
+    Magnet = np.abs(np.sum(State))
 
     Final_magnetiz = (Final_magnetiz*(t - start) + Magnet) / (t - start + 1)
 
