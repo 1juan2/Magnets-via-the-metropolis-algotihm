@@ -7,15 +7,16 @@ import Functions2D as Fc2
 # import Analytic as An
 # import deriv as Dr
 
-Desi_temp_toVisual = 3.9         #Write the temp to which you want to see the state evolut., initial state and Avr energy.
+Desi_temp_toVisual = 4.2         #Write the temp to which you want to see the state evolut., initial state and Avr energy.
 
 ##Read data
 EV_matr_init = np.loadtxt('StateEvol/Init_state' + str(Desi_temp_toVisual) + '.txt')
 EV_matr_final = np.loadtxt('StateEvol/StateEvol' + str(Desi_temp_toVisual) + '.txt')
 
-Data_E_equil = np.loadtxt('AvrEnergy/AvrEnergy' + str(Desi_temp_toVisual) + '.txt')
-time = Data_E_equil[:, 0]
-E_equil = Data_E_equil[:, 1]
+Data_V_equil = np.loadtxt('AvrValues/AvrValues' + str(Desi_temp_toVisual) + '.txt')
+time = Data_V_equil[:, 0]
+E_equil = Data_V_equil[:, 1]
+M_equil = Data_V_equil[:, 2]
 
 Data_termo_quant = np.loadtxt('Termo_values.txt', skiprows=1)
 Magnetiz = Data_termo_quant[:, 0]
@@ -51,12 +52,18 @@ plt.show()
 
 ##Graph equilibration check
 
-fig2 = plt.figure(figsize = (5,5))
-plt.title('Verif. del equil. promediando la energia del sistema')
-plt.plot(time, E_equil)
-plt.xlabel('Time')
-plt.ylabel('Avr. Energy')
-plt.grid()
+fig2, ax = plt.subplots(1, 2, figsize = (15,5))
+ax[0].plot(time, E_equil)
+ax[0].set_title('Verif. del equil. promediando la energia del sistema')
+ax[0].set_xlabel('t')
+ax[0].set_ylabel('Prom. Energia')
+ax[0].grid()
+
+ax[1].plot(time, M_equil)
+ax[1].set_title('Verif. del equil. promediando la Magnetiz. del sistema')
+ax[1].set_xlabel('t')
+ax[1].set_ylabel('Prom. Magnetización')
+ax[1].grid()
 #fig2.savefig('Avr_Energy_equilCheck.pdf')
 plt.show()
 
