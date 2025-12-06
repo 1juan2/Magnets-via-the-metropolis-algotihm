@@ -7,9 +7,9 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 50,  # (50) The length of the side plate
+"Num_particles" : 5,  # (50) The length of the side plate
 
-"total_Time" : 200,   #Total MC samples
+"total_Time" : 18400,   #Total MC samples
 
 "J" : 1,                # Exchange Energy (1)
 
@@ -19,11 +19,11 @@ Values = {
 
 "K" : 1,                # Botlzmann constant (1)
 
-"T" : [2],                # Temperature (1)
+"T" : [0.1, 0.3, 0.5, 0.7, 0.9, 1.2, 1.5, 1.7, 1.9, 2.2, 2.5, 2.7, 2.9, 3.2, 3.5, 3.7, 3.9, 4.2, 4.5, 4.7, 4.9],                # Temperature (1)
 
 #################
 
-"Start_quantit_calcu" : 1     #Since which MC iteration we are going ro calculate termal quantities. (10000)
+"Start_quantit_calcu" : 2500     #Since which MC iteration we are going to calculate termal quantities.
 }
 
 
@@ -40,26 +40,6 @@ def State_Energy(State):
 
     E = - (Values["J"]*sum_ss) - (Values["B"]*Values["Miu"]*sum_s)
     return E
-
-
-#Energy local calculation. Aproximation:  (The algotihm seems to work with the total energy calculation and with the local one)
-
-#def Local_Energy(State, spin_posit):
-#
-#    if spin_posit == 0:
-#        sum_ss = State[0]*State[1] + State[0]*State[-1]
-#        sum_s = State[0] + State[1] + State[-1]
-#
-#    elif spin_posit == Values["Num_particles"] - 1:
-#        sum_ss = State[-1]*State[-2] + State[-1]*State[0]
-#        sum_s = State[-1] + State[-2] + State[0]
-#
-#    else:
-#        sum_ss = sum(State[spin_posit - 1 : spin_posit + 1]*State[spin_posit : spin_posit + 2])
-#        sum_s = sum(State[spin_posit - 1 : spin_posit + 2])
-#
-#    E = - (Values["J"]*sum_ss) - (Values["B"]*Values["Miu"]*sum_s)
-#    return E
 
 
 #Equilibration check using Running avarage
@@ -79,7 +59,7 @@ def Equil_check(vec_save, E_act, t):
 
 #Metropolis algorithm
 
-def Metropoolis(Time, Chain_vector, E_eq_verif, temp):
+def Metropoolis(Time, Chain_vector, E_eq_verif, Num_itera_star_temoCalcul, temp):
 
     for i in Time[1:]:
 
@@ -117,37 +97,37 @@ def Metropoolis(Time, Chain_vector, E_eq_verif, temp):
         E = State_Energy(Chain_vector)
         Equil_check(E_eq_verif, E, i)
 
-        ## In equili, termodin quantities are calculated:
+        # In equili, termodin quantities are calculated:
 
-    #     if i >= Num_itera_star_temoCalcul:
-    #         if i == Num_itera_star_temoCalcul:
-    #             Magnetizat = 0
-    #             Inter_Energy = 0
-    #             Segund_mome_Energ = 0
+        if i >= Num_itera_star_temoCalcul:
+            if i == Num_itera_star_temoCalcul:
+                Magnetizat = 0
+                Inter_Energy = 0
+                Segund_mome_Energ = 0
 
-    #         Magnetizat = Magnetization(Magnetizat, Chain_vector, i, Num_itera_star_temoCalcul)
-    #         Inter_Energy = Moment_energy(Inter_Energy, Chain_vector, i, Num_itera_star_temoCalcul, 1)
-    #         Segund_mome_Energ = Moment_energy(Segund_mome_Energ, Chain_vector, i, Num_itera_star_temoCalcul, 2)
+            Magnetizat = Magnetization(Magnetizat, Chain_vector, i, Num_itera_star_temoCalcul)
+            Inter_Energy = Moment_energy(Inter_Energy, Chain_vector, i, Num_itera_star_temoCalcul, 1)
+            Segund_mome_Energ = Moment_energy(Segund_mome_Energ, Chain_vector, i, Num_itera_star_temoCalcul, 2)
 
-    # Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (temp**2))
+    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (temp**2))
 
-    return Chain_vector, E_eq_verif#, Magnetizat, Inter_Energy, Specif_heat
+    return Chain_vector, E_eq_verif, Magnetizat, Inter_Energy, Specif_heat
 
 
 ##When the system reaches equilibrium Magnetization, Specific heat and Internal Energy are calculated.
 
-# def Magnetization(Final_magnetiz, State, t, start):
-#     Magnet = sum(State)
+def Magnetization(Final_magnetiz, State, t, start):
+    Magnet = np.sum(State)
 
-#     Final_magnetiz = (Final_magnetiz*(t - start) + Magnet) / (t - start + 1)
+    Final_magnetiz = (Final_magnetiz*(t - start) + Magnet) / (t - start + 1)
 
-#     return Final_magnetiz
+    return Final_magnetiz
 
 
-# def Moment_energy(Final_moment, State, t, start, expo):  #Expo is to be able to calculate the first and second Energy moments.
-#     Energ = (State_Energy(State))**(expo)                   #The first moment is the Internal energy and the second moment is necesary to calculate the Specific heat.
+def Moment_energy(Final_moment, State, t, start, expo):  #Expo is to be able to calculate the first and second Energy moments.
+    Energ = (State_Energy(State))**(expo)                   #The first moment is the Internal energy and the second moment is necesary to calculate the Specific heat.
 
-#     Final_moment = (Final_moment*(t - start) + Energ) / (t - start + 1)
+    Final_moment = (Final_moment*(t - start) + Energ) / (t - start + 1)
 
-#     return Final_moment
+    return Final_moment
     
