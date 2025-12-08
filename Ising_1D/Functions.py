@@ -7,19 +7,19 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 200,  # (100)
+"Num_particles" : 600,  # (100)
 
-"total_Time" : 600,   #Total MC samples (60000)
+"total_Time" : 600,   #Total MC samples (600)
 
 "J" : 1,                # Exchange Energy (1)
 
-"B" : 1,                # Value of the external magnetic field (1)
+"B" : 0,                # Value of the external magnetic field (1)
 
 "Miu" : 0.33,           # giromag times Bohr magneton (0.33)
 
 "K" : 1,                # Botlzmann constant (1)
 
-"T" : [0.1, 0.5, 1, 1.5, 2, 3, 3.5, 4],                # Temperature (1)
+"T" : np.arange(0.1, 5.1, 0.2),               # Temperature (1)
 
 #################
 
@@ -128,7 +128,7 @@ def Metropoolis(Time, Chain_vector, Evol_M, E_eq_verif, Num_itera_star_temoCalcu
             Inter_Energy = Moment_energy(Inter_Energy, Chain_vector, i, Num_itera_star_temoCalcul, 1)
             Segund_mome_Energ = Moment_energy(Segund_mome_Energ, Chain_vector, i, Num_itera_star_temoCalcul, 2)
 
-    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/((Values["Num_particles"]**2) * Values["K"] * (temp**2))
+    Specif_heat = (Segund_mome_Energ - (Inter_Energy**2))/(Values["K"] * (temp**2))
 
     return Evol_M, E_eq_verif, Magnetizat, Inter_Energy, Specif_heat
 

@@ -12,7 +12,7 @@ def u_ana(n,j,k,t,b,miu):
     delt = np.sqrt(np.sinh(a)**2 + np.exp(-4*c))
 
     u = -n*j - (n/(np.cosh(a) + delt))*((miu*b*np.sinh(a)) + ((miu*b*np.sinh(a)*np.cosh(a) - 2*j*np.exp(-4*c))/delt))
-    return u
+    return u, -n*j*np.tanh(j/(k*t))
 
     #return -n*j*np.tanh(j/(k*t))
 
@@ -20,9 +20,9 @@ def u_ana(n,j,k,t,b,miu):
 
 #Specific Heat (without considering Magnetic field)
 
-#def cal_ana(n,j,k,t):
+def cal_ana(n,j,k,t):
 
-    #return (j/(k*t))**2/(np.cosh(j/(k*t))**2)
+    return n*(j/(k*t))**2/(np.cosh(j/(k*t))**2)
 
 #print(cal_ana(n,j,k,t))
 

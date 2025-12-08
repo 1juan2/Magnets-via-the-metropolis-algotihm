@@ -42,12 +42,12 @@ for case in range(len(Fc.Values["T"])):
     ##Name creation to save the data
 
     FoldName_State = "StateEvol"
-    FileName_State = 'StateEvol' + str(Fc.Values["T"][case]) + '.txt'
+    FileName_State = 'StateEvol' + str(round(Fc.Values["T"][case], 1)) + '.txt'
     Path_State = os.path.join(FoldName_State, FileName_State)
     os.makedirs(FoldName_State, exist_ok=True)
 
     FoldName_AvrEner = "AvrEnergy"
-    FileName_AvrEner = 'AvrEnergy' + str(Fc.Values["T"][case]) + '.txt'
+    FileName_AvrEner = 'AvrEnergy' + str(round(Fc.Values["T"][case], 1)) + '.txt'
     Path_AvrEner = os.path.join(FoldName_AvrEner, FileName_AvrEner)
     os.makedirs(FoldName_AvrEner, exist_ok=True)
 
