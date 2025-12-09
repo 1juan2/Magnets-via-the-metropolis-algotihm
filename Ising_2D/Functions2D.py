@@ -7,7 +7,7 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 5,  # (50) The length of the side plate
+"Num_particles" : 10,  # (50) The length of the side plate
 
 "total_Time" : 18400,   #Total MC samples
 
