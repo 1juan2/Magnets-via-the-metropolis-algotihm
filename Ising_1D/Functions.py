@@ -11,7 +11,7 @@ Values = {
 
 "total_Time" : 600,   #Total MC samples (600)
 
-"J" : -1,                # Exchange Energy (1)
+"J" : 1,                # Exchange Energy (1)
 
 "B" : 1,                # Value of the external magnetic field (1)
 

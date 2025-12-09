@@ -7,13 +7,13 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 10,  # (50) The length of the side plate
+"Num_particles" : 5,  # (50) The length of the side plate
 
 "total_Time" : 18400,   #Total MC samples
 
 "J" : 1,                # Exchange Energy (1)
 
-"B" : 0,                # Value of the external magnetic field (1)
+"B" : 1,                # Value of the external magnetic field (1)
 
 "Miu" : 0.33,           # giromag times Bohr magneton (0.33)
 
