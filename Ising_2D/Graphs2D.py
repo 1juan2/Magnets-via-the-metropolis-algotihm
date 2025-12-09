@@ -74,7 +74,7 @@ plt.show()
 ##Magnetization
 
 fig3 = plt.figure(figsize = (5,5))
-plt.title('Cálculo analítico de la magentización vs resultado numerico')
+plt.title('Cálculo numerico de la magentización')
 #plt.plot(t,An.mag_ana(n,j,k,t,b,miu))
 plt.plot(Temp, Magnetiz)
 plt.xlabel('Temp')
@@ -87,12 +87,14 @@ plt.show()
 ##Internal_Energy
 
 fig4 = plt.figure(figsize = (5,5))
-plt.title('Cálculo analítico de la energía vs resultado numerico')
+plt.title('Cálculo numerico de la energía y magnetiza.')
 #plt.plot(t, An.u_ana(n,j,k,t,b,miu))
-plt.plot(Temp, Internal_energy)
+plt.plot(Temp, Internal_energy, label = "Energia interna")
+plt.plot(Temp, Magnetiz, label = "Magneti.")
 plt.xlabel('Temp')
-plt.ylabel('Internal_Energy')
+plt.ylabel('Energia(J)')
 plt.grid()
+plt.legend()
 #fig4.savefig('Energia_Interna.pdf')
 plt.show()
 
@@ -100,7 +102,7 @@ plt.show()
 ##Speci_heat
 
 fig5 = plt.figure(figsize = (5,5))
-plt.title('Cálculo analítico del calor específico vs resultado numerico')
+plt.title('Cálculo numerico del calor específico')
 #plt.plot(Dr.X[1:-1], Dr.Specif_heat)
 plt.plot(Temp, Speci_heat)
 plt.xlabel('Temp')
