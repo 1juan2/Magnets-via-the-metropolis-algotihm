@@ -7,7 +7,7 @@ import Functions2D as Fc2
 # import Analytic as An
 # import deriv as Dr
 
-Desi_temp_toVisual = 4.2         #Write the temp to which you want to see the state evolut., initial state and Avr energy.
+Desi_temp_toVisual = 1.7         #Write the temp to which you want to see the state evolut., initial state and Avr energy.
 
 ##Read data
 EV_matr_init = np.loadtxt('StateEvol/Init_state' + str(Desi_temp_toVisual) + '.txt')
