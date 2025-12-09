@@ -7,13 +7,13 @@ import numpy as np
 ## Constants and general values
 
 Values = {
-"Num_particles" : 600,  # (100)
+"Num_particles" : 200,  # (100)
 
 "total_Time" : 600,   #Total MC samples (600)
 
-"J" : 1,                # Exchange Energy (1)
+"J" : -1,                # Exchange Energy (1)
 
-"B" : 0,                # Value of the external magnetic field (1)
+"B" : 1,                # Value of the external magnetic field (1)
 
 "Miu" : 0.33,           # giromag times Bohr magneton (0.33)
 
@@ -23,7 +23,7 @@ Values = {
 
 #################
 
-"Start_quantit_calcu" : 100     #Since which MC iteration we are going ro calculate termal quantities. (10000)
+"Start_quantit_calcu" : 100     #Since which MC iteration we are going ro calculate termal quantities. (100)
 }
 
 

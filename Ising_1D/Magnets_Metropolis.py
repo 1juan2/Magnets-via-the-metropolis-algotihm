@@ -10,7 +10,8 @@ for case in range(len(Fc.Values["T"])):
     ##Defining the state vector of spins that create the material (they're fixed, we don't care about positions or momenta)
     # and defining the evolution Matrix (it's a matrix since it has to store the state chain vector at each time in order to visualize it)
 
-    Chain_Spin_StateVect = np.full(Fc.Values["Num_particles"],1)
+    Chain_Spin_StateVect = np.random.choice([-1, 1], size = Fc.Values["Num_particles"], replace = True)
+    #Chain_Spin_StateVect = np.full(Fc.Values["Num_particles"],1)
     Evol_Matr = np.zeros((Fc.Values["Num_particles"], Fc.Values["total_Time"]))
 
     #print(Chain_Spin_StateVect)
